@@ -2,7 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./Database/config.js";
-import authRouter from './Routers/authRouter.js'
+import authRoute from './Routers/authRouter.js'
+import userRoute from './Routers/userRouter.js'
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -16,6 +18,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(cookieParser())
 
 //Error Handler - Middleware
 app.use((err, req, res, next) => {
@@ -35,7 +38,8 @@ app.get("/", (req, res) => {
 });
 
 //API Routers
-app.use('/api/auth',authRouter)
+app.use('/api/auth',authRoute)
+app.use('/api/user',userRoute)
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port");
