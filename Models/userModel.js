@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
     profilePicture:{
       type:String,
       default:"https://e7.pngegg.com/pngimages/505/761/png-clipart-login-computer-icons-avatar-icon-monochrome-black.png"
+    },
+    isAdmin:{
+      type:Boolean,
+      default:false,
     }
   },
   { timestamps: true }

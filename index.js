@@ -5,6 +5,8 @@ import connectDB from "./Database/config.js";
 import authRoute from './Routers/authRouter.js'
 import userRoute from './Routers/userRouter.js'
 import cookieParser from "cookie-parser";
+import postRoute from './Routers/postRouter.js'
+
 
 dotenv.config();
 
@@ -40,6 +42,7 @@ app.get("/", (req, res) => {
 //API Routers
 app.use('/api/auth',authRoute)
 app.use('/api/user',userRoute)
+app.use('/api/post',postRoute)
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port");

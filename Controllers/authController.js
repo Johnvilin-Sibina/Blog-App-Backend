@@ -41,15 +41,15 @@ export const loginUser = async (req, res, next) => {
     if (!userDetail || !userPassword) {
       return next(errorHandler(400, "Invalid Credentials"));
     }
-    const token = jwt.sign({ id: userDetail._id }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign(
+      { id: userDetail._id, isAdmin: userDetail.isAdmin },
+      process.env.JWT_SECRET_KEY
+    );
 
     const { password: passkey, ...rest } = userDetail._doc;
     res
       .status(200)
-      .cookie("access_Token", token, {
-        httpOnly: true,
-      })
-      .json({ message: "User Logged In Successfully", rest });
+      .json({ message: "User Logged In Successfully", rest, token });
   } catch (error) {
     next(error);
   }
@@ -61,17 +61,14 @@ export const google = async (req, res, next) => {
     const userDetail = await User.findOne({ email });
     if (userDetail) {
       const token = jwt.sign(
-        { id: userDetail._id },
+        { id: userDetail._id, isAdmin: userDetail.isAdmin },
         process.env.JWT_SECRET_KEY
       );
-
       const { password: passkey, ...rest } = userDetail._doc;
+
       res
         .status(200)
-        .cookie("access_Token", token, {
-          httpOnly: true,
-        })
-        .json({ message: "User Logged In Successfully", rest });
+        .json({ message: "User Logged In Successfully", rest, token });
     } else {
       const generatePassword =
         Math.random().toString(36).slice(-8) +
@@ -86,10 +83,12 @@ export const google = async (req, res, next) => {
         profilePicture: profilePic,
       });
       await newUser.save();
-      const token = jwt.sign(
-        { id: userDetail._id },
-        process.env.JWT_SECRET_KEY
-      );
+      const token = jwt.sign({ id: newUser._id, isAdmin:newUser.isAdmin }, process.env.JWT_SECRET_KEY);
+      const { password: passkey, ...rest } = newUser._doc;
+
+      res
+        .status(200)
+        .json({ message: "User Logged In Successfully", rest, token });
     }
   } catch (error) {
     next(error);
